@@ -1,0 +1,10 @@
+Script started on Thu 16 Jan 2014 21:00:21 UTC
+]0;pi@raspberrypi: ~/ss[01;32mpi@raspberrypi[00m [01;34m~/ss $[00m exec env ENV='' PROMPT_COMMAND='' PS1=\#\$\  PS2='' PS3='' /bbin/sh[A]0;pi@raspberrypi: ~/ss[01;32mpi@raspberrypi[00m [01;34m~/ss $[00m [34Piwconfig wlan0 | grep Link
+[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[Cexec env ENV='' PROMPT_COMMAND='' PS1=\#\$\  PS2='' PS3='' /bbin/sh[A]0;pi@raspberrypi: ~/ss[01;32mpi@raspberrypi[00m [01;34m~/ss $[00m [K
+[K[A[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C[C./ss.py -DB2
+scanimage -D fujitsu:fi-5120Cdj:162160 --batch=scan-%d.tiff --swdspeck 5 --format=tiff --resolution 200 --mode Color --source="ADF Duplex" --batch-count=2
+convert -adjoin -compress jpeg scan-0.tiff scan-1.tiff Scan--140116-210031.pdf
+]0;pi@raspberrypi: ~/ss[01;32mpi@raspberrypi[00m [01;34m~/ss $[00m exit
+exit
+
+Script done on Thu 16 Jan 2014 21:00:33 UTC

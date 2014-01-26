@@ -1,0 +1,3 @@
+#!/bin/sh
+
+scanimage -d fujitsu:fi-5120Cdj:162160 --batch=scan-%d.tiff --swdespeck 5 --format=tiff --resolution 200 --mode Color --source="ADF Duplex" --batch-count=2

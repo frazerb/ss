@@ -1,0 +1,85 @@
+#!/usr/bin/python
+
+import argparse
+import subprocess
+from time import localtime, strftime, sleep
+import sys
+
+
+parser = argparse.ArgumentParser(description='Simple Scanner', fromfile_prefix_chars='@')
+
+parser.add_argument('-R', help="resolution - default is R_default", default=200, type=int) 
+parser.add_argument('-S', help="scanner type", default='net:localhost:fujitsu:fi-5120Cdj:162160')
+parser.add_argument('-D', help="choose duplex scan", action="store_true")
+parser.add_argument('-G', help="choose grayscale scan", action="store_true")
+parser.add_argument('-B', help="Batch of <n> pages", default=1, type=int)
+parser.add_argument('-L', help="gdrive label", default='home_filing')
+parser.add_argument('-O', help="output file", default='Scan')
+
+parser.add_argument('-C', help="store in the cloud", action="store_true")
+parser.add_argument('-E', help="email to an address", action='append')
+parser.add_argument('-P', help="send to printer", action="store_true")
+
+args = parser.parse_args()
+
+if (args.D):
+    DUPLEX="ADF Duplex"
+    sheets = args.B * 2
+else:
+    DUPLEX="ADF Front"
+    sheets = args.B
+
+if (args.G):
+    COLOURMODE="Gray"
+else:
+    COLOURMODE="Color"
+
+args.O = args.O + strftime("-%y%m%d-%H%M%S.pdf", localtime());
+
+#SI_default=['echo', 'scanimage', '-vd ' + args.S, '--batch=scan-%d.tiff', '--swdespeck', '5', '--format=tiff'];
+SI_default=['sudo', 'scanimage', '-d' , args.S, '--batch=scan-%d.tiff', '--swdespeck', '5', '--format=tiff'];
+
+success=False
+for attempt in range(10):
+    try:
+        result = subprocess.check_output(SI_default + 
+                                ['--resolution', `args.R`,
+                                 '--mode', COLOURMODE,
+                                 '--source', DUPLEX,
+                                 '--batch-count', `args.B`],
+                                stderr=subprocess.STDOUT)
+        print result
+    except subprocess.CalledProcessError as e:
+        if e.returncode != 7: 
+            print "Failed errorcode " + str(e.returncode) + "\n" + e.output
+            success = False
+            break
+        sys.stdout.write("..." + `attempt`)
+        sys.stdout.flush()
+        sleep(1)
+    else: 
+        success=True
+        break
+
+if success == False:
+    print "Failed damn it"
+    exit(1)
+
+#concatenate and format pages received
+
+input_files = []
+for i in range (0,sheets):
+    input_files.append("scan-%d.tiff" % (i+1))
+
+print "Converting and agjoining stuff"
+
+subprocess.call(['convert',
+                 '-adjoin',
+                 '-compress', 'jpeg'] +
+                input_files +
+                [args.O])
+
+if (args.C):
+    G_default=['/home/pi/gdu/gdu.py', args.O ];
+    subprocess.call(G_default + [args.L])
+
